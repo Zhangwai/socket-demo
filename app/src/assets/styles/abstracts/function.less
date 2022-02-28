@@ -1,0 +1,41 @@
+// Suitable for webkit core and mobile
+.ellipsis-multiple(@num: 1) {
+  display: -webkit-box;
+  overflow: hidden;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: @num;
+}
+
+// Set width && height
+.set-size(@width, @height:@width) {
+  width: @width;
+  height: @height;
+}
+
+// common flex type
+.flex-type(@justify-type: flex-start, @direction-type: row) {
+  display: flex;
+  flex-direction: @direction-type;
+  align-items: center;
+  justify-content: @justify-type;
+}
+
+// set font size && color
+.font-style(@size, @color) {
+  font-size: @size;
+  color: @color;
+}
+
+// Y-axis animation
+.slide-in(@y-begin, @y-end, @name){
+  @keyframes @name{
+    from {
+      transform: translateY(@y-begin);
+      opacity: 0
+    }
+    to {
+      transform: translateY(@y-end);
+      opacity: 1
+    }
+  }
+}
