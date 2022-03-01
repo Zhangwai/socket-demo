@@ -14,6 +14,7 @@ module.exports = {
     // 添加别名
     config.resolve.alias
       .set("@", resolve("src"))
+      .set("@hooks", resolve("src/hooks"))
       .set("@assets", resolve("src/assets"))
       .set("@style", resolve("src/assets/style"))
       .set("@components", resolve("src/components"))

@@ -42,6 +42,42 @@ io.on("connection", (socket) => {
     console.log("通过房间号发送消息", roomid, msg);
     io.in(roomid).emit("receiveMsg", msg, socket.id);
   });
+
+  // 转发申请
+  socket.on("apply", (data) => {
+    console.log("主动申请连接", data);
+    socket.to(data.roomid).emit("apply", data);
+  });
+
+  // 转发回复
+  socket.on("reply", (data) => {
+    console.log("回复", data);
+    socket.to(data.roomid).emit("reply", data);
+  });
+
+  // 转发 Offer
+  socket.on("1v1offer", (data) => {
+    console.log("1v1offer");
+    socket.to(data.roomid).emit("1v1offer", data);
+  });
+
+  // 转发 answer
+  socket.on("1v1answer", (data) => {
+    console.log("1v1anwser");
+    socket.to(data.roomid).emit("1v1answer", data);
+  });
+
+  // 转发 ICE
+  socket.on("1v1ICE", (data) => {
+    console.log("1v1ICE");
+    socket.to(data.roomid).emit("1v1ICE", data);
+  });
+
+  // 转发 hangup
+  socket.on("1v1hangup", (data) => {
+    console.log("1v1hangup");
+    socket.to(data.roomid).emit("1v1hangup", data);
+  });
 });
 
 /**
