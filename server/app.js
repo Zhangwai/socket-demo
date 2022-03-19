@@ -20,10 +20,12 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, "public")));
+// 配置可访问静态文件
+app.use("/upload", express.static(path.join(__dirname, "upload")));
 
 app.use("/", indexRouter);
 app.use("/users", usersRouter);
-app.use("/single3", singleRouter);
+app.use("/", singleRouter);
 app.use("/merge", mergeRouter);
 
 // catch 404 and forward to error handler

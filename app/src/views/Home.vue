@@ -3,6 +3,35 @@
     <img alt="Vue logo" src="../assets/logo.png" />
     {{ obj }}
 
+    <el-upload class="upload-demo" drag action="/api/single1" multiple>
+      <el-icon class="el-icon--upload"><upload-filled /></el-icon>
+      <div class="el-upload__text">
+        Drop file here or <em>click to upload</em>
+      </div>
+      <template #tip>
+        <div class="el-upload__tip">formData上传</div>
+      </template>
+    </el-upload>
+
+    ----------------------------------------------------------------
+
+    <el-upload
+      class="upload-demo"
+      drag
+      action
+      :auto-upload="false"
+      :on-change="changeFileByBase64"
+      multiple
+    >
+      <el-icon class="el-icon--upload"><upload-filled /></el-icon>
+      <div class="el-upload__text">
+        Drop file here or <em>click to upload</em>
+      </div>
+      <template #tip>
+        <div class="el-upload__tip">base64上传</div>
+      </template>
+    </el-upload>
+
     ----------------------------------------------------------------
 
     <el-upload
@@ -33,6 +62,7 @@ import { useData } from "./hooks/index";
 import { fileParse } from "../utils/index";
 import SparkMd5 from "spark-md5";
 import axios from "axios";
+import qs from "qs";
 
 export default defineComponent({
   name: "Home",
@@ -47,6 +77,29 @@ export default defineComponent({
     const requestArr: Array<any> = []; // 请求集合
     let hash: string;
 
+    const changeFileByBase64 = async (file: any) => {
+      console.log(file);
+      if (!file) return;
+      file = file.raw;
+
+      const data = await fileParse(file, "base64");
+
+      const res = await axios.post(
+        "/api/single2",
+        qs.stringify({
+          chunk: encodeURIComponent(data),
+          filename: file.name,
+        }),
+        {
+          headers: {
+            "Content-Type": "application/x-www-form-urlencoded",
+          },
+        }
+      );
+      if (res.data.code === 0) {
+        console.log(res.data.path);
+      }
+    };
     const sendRequest = () => {
       // 传递 并行 | 串行
       let i = 0;
@@ -128,7 +181,15 @@ export default defineComponent({
         abort.value = !abort.value;
       }
     };
-    return { obj, changeFile, fileUrl, total, handleClick, abort };
+    return {
+      obj,
+      fileUrl,
+      total,
+      abort,
+      changeFile,
+      handleClick,
+      changeFileByBase64,
+    };
   },
 });
 </script>
