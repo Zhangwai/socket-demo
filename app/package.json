@@ -13,6 +13,7 @@
     "axios": "^0.21.4",
     "core-js": "^3.6.5",
     "echarts": "^5.1.2",
+    "cropperjs": "1.5.11",
     "element-plus": "^2.0.2",
     "moment": "^2.29.1",
     "qs": "^6.5.3",

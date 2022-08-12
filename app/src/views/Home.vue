@@ -1,10 +1,16 @@
 <template>
   <div class="home">
-    <img alt="Vue logo" src="../assets/logo.png" />
+    <img alt="Vue logo"
+         src="../assets/logo.png" />
     {{ obj }}
 
-    <el-upload class="upload-demo" drag action="/api/single1" multiple>
-      <el-icon class="el-icon--upload"><upload-filled /></el-icon>
+    <el-upload class="upload-demo"
+               drag
+               action="/api/single1"
+               multiple>
+      <el-icon class="el-icon--upload">
+        <upload-filled />
+      </el-icon>
       <div class="el-upload__text">
         Drop file here or <em>click to upload</em>
       </div>
@@ -13,17 +19,25 @@
       </template>
     </el-upload>
 
+    <UploadImage v-model:fileList="fileList"
+                 :aspectRatio="1 / 1"
+                 :limit="3"
+                 :size="500"
+                 isCropped
+                 class="upload"
+                 @change="handleChange" />
+
     ----------------------------------------------------------------
 
-    <el-upload
-      class="upload-demo"
-      drag
-      action
-      :auto-upload="false"
-      :on-change="changeFileByBase64"
-      multiple
-    >
-      <el-icon class="el-icon--upload"><upload-filled /></el-icon>
+    <el-upload class="upload-demo"
+               drag
+               action
+               :auto-upload="false"
+               :on-change="changeFileByBase64"
+               multiple>
+      <el-icon class="el-icon--upload">
+        <upload-filled />
+      </el-icon>
       <div class="el-upload__text">
         Drop file here or <em>click to upload</em>
       </div>
@@ -34,15 +48,15 @@
 
     ----------------------------------------------------------------
 
-    <el-upload
-      class="upload-demo"
-      drag
-      action
-      :auto-upload="false"
-      :on-change="changeFile"
-      multiple
-    >
-      <el-icon class="el-icon--upload"><upload-filled /></el-icon>
+    <el-upload class="upload-demo"
+               drag
+               action
+               :auto-upload="false"
+               :on-change="changeFile"
+               multiple>
+      <el-icon class="el-icon--upload">
+        <upload-filled />
+      </el-icon>
       <div class="el-upload__text">
         Drop file here or <em>click to upload</em>
       </div>
@@ -56,22 +70,26 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, ref } from "vue";
-import { UploadFilled } from "@element-plus/icons-vue";
-import { useData } from "./hooks/index";
-import { fileParse } from "../utils/index";
-import SparkMd5 from "spark-md5";
-import axios from "axios";
-import qs from "qs";
+import { defineComponent, ref } from 'vue';
+import { UploadFilled } from '@element-plus/icons-vue';
+import { useData } from './hooks/index';
+import { fileParse } from '../utils/index';
+import UploadImage from '@/components/UploadImage/index.vue';
+import SparkMd5 from 'spark-md5';
+import axios from 'axios';
+import qs from 'qs';
 
 export default defineComponent({
-  name: "Home",
+  name: 'Home',
   components: {
     UploadFilled,
+    UploadImage,
   },
   setup() {
     const { obj } = useData();
-    const fileUrl = ref<string>("");
+    const fileUrl = ref<string>('');
+
+    const fileList = ref([]);
     let total = ref<number>(0);
     let abort = ref<boolean>(false);
     const requestArr: Array<any> = []; // 请求集合
@@ -82,17 +100,17 @@ export default defineComponent({
       if (!file) return;
       file = file.raw;
 
-      const data = await fileParse(file, "base64");
+      const data = await fileParse(file, 'base64');
 
       const res = await axios.post(
-        "/api/single2",
+        '/api/single2',
         qs.stringify({
           chunk: encodeURIComponent(data),
           filename: file.name,
         }),
         {
           headers: {
-            "Content-Type": "application/x-www-form-urlencoded",
+            'Content-Type': 'application/x-www-form-urlencoded',
           },
         }
       );
@@ -104,7 +122,7 @@ export default defineComponent({
       // 传递 并行 | 串行
       let i = 0;
       const complate = () => {
-        return axios.get("/api/merge", {
+        return axios.get('/api/merge', {
           params: {
             hash,
           },
@@ -132,7 +150,7 @@ export default defineComponent({
 
       // 大文件处理为buffer数据
       // 我们会把文件切片处理（固定数量|固定大小）
-      const buffer = await fileParse(file, "buffer");
+      const buffer = await fileParse(file, 'buffer');
       const spark = new SparkMd5.ArrayBuffer();
       spark.append(buffer);
       hash = spark.end();
@@ -153,11 +171,11 @@ export default defineComponent({
         partList.forEach((item: any, index: number) => {
           const fn = () => {
             let formData = new FormData();
-            formData.append("chunk", item.chunk);
-            formData.append("filename", item.filename);
+            formData.append('chunk', item.chunk);
+            formData.append('filename', item.filename);
             return axios
-              .post("/api/single3", formData, {
-                headers: { "Content-Type": "multipart/form-data" },
+              .post('/api/single3', formData, {
+                headers: { 'Content-Type': 'multipart/form-data' },
               })
               .then((res) => {
                 if (res.data.code === 0) {
@@ -181,14 +199,21 @@ export default defineComponent({
         abort.value = !abort.value;
       }
     };
+
+    const handleChange = (e: any) => {
+      console.log(e);
+      console.log(fileList.value, 'fileList');
+    };
     return {
       obj,
       fileUrl,
       total,
       abort,
+      fileList,
       changeFile,
       handleClick,
       changeFileByBase64,
+      handleChange,
     };
   },
 });
