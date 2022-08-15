@@ -25,7 +25,8 @@
                  :size="500"
                  isCropped
                  class="upload"
-                 @change="handleChange" />
+                 @change="handleChange"
+                 @update:fileList="handleUpdate" />
 
     ----------------------------------------------------------------
 
@@ -204,6 +205,10 @@ export default defineComponent({
       console.log(e);
       console.log(fileList.value, 'fileList');
     };
+
+    const handleUpdate = (e: any) => {
+      console.log(e, 'handleUpdate');
+    };
     return {
       obj,
       fileUrl,
@@ -214,6 +219,7 @@ export default defineComponent({
       handleClick,
       changeFileByBase64,
       handleChange,
+      handleUpdate,
     };
   },
 });

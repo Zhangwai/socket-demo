@@ -170,6 +170,8 @@ export default defineComponent({
     const handleUpload = (e: any) => {
       if (props.cleanBeforeUpload) {
         myFileList.value = [];
+      } else {
+        myFileList.value.pop();
       }
       const tmpFileList = JSON.parse(JSON.stringify(myFileList.value));
       const { file } = e;
